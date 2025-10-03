@@ -2,8 +2,18 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+from PIL import Image
 
 st.set_page_config(layout="wide", page_title="Sales Method Analysis")
+
+# ==============================
+# HEADER DENGAN GAMBAR
+# ==============================
+try:
+    banner = Image.open("images/sales_banner.png")
+    st.image(banner, use_column_width=True)
+except:
+    st.markdown("<h1 style='text-align:center; color:#FFD43B; background-color:#1E3A5F; padding:10px;'>SALES METHOD ANALYSIS</h1>", unsafe_allow_html=True)
 
 # ==============================
 # LOAD DATA
@@ -52,17 +62,32 @@ filtered = filtered[
 # ==============================
 # KPI METRICS
 # ==============================
-st.markdown("<h1 style='text-align:center; color:#FFD43B; background-color:#1E3A5F; padding:10px;'>SALES METHOD ANALYSIS</h1>", unsafe_allow_html=True)
-
 kpi1, kpi2, kpi3 = st.columns(3)
 
 total_sales = filtered["Total Sales"].sum()
 total_profit = filtered["Operating Profit"].sum()
 avg_margin = filtered["Operating Margin"].mean() * 100
 
-kpi1.metric("Total Sales", f"${total_sales/1e6:.0f}M")
-kpi2.metric("Total Profit", f"${total_profit/1e6:.0f}M")
-kpi3.metric("Average Operating Margin", f"{avg_margin:.2f}%")
+with kpi1:
+    try:
+        st.image("images/instore_icon.png", width=50)
+    except:
+        st.write("🏬")
+    st.metric("Total Sales", f"${total_sales/1e6:.0f}M")
+
+with kpi2:
+    try:
+        st.image("images/online_icon.png", width=50)
+    except:
+        st.write("💻")
+    st.metric("Total Profit", f"${total_profit/1e6:.0f}M")
+
+with kpi3:
+    try:
+        st.image("images/outlet_icon.png", width=50)
+    except:
+        st.write("🏷️")
+    st.metric("Average Operating Margin", f"{avg_margin:.2f}%")
 
 # ==============================
 # VISUALS
@@ -102,7 +127,6 @@ with col3:
     )
     st.plotly_chart(fig_margin, use_container_width=True)
 
-
 with col4:
     st.subheader("Product by Total Order and Sales Method")
     product_sales = filtered.groupby(["Product", "Sales Method"])["Total Sales"].sum().reset_index()
@@ -138,6 +162,10 @@ with left:
 
 with right:
     st.subheader("Recommendations")
+    try:
+        st.image("images/strategy.png", use_container_width=True)
+    except:
+        st.write("📊")
     st.markdown("""
     - **Focus on Online**: Highest margin (46.3%) → Invest more in online marketing & channels.  
     - **Leverage In-store seasonality**: In-store peaks mid-year → run seasonal promotions.  
@@ -147,4 +175,3 @@ with right:
 
 st.markdown("---")
 st.caption("Created by Zinedine Amalia — Sales Method Performance Overview")
-
